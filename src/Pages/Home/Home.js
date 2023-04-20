@@ -34,7 +34,7 @@ const Home = () => {
 
       <DisplayBlogs direction="row">
         {blogs
-          .slice((page - 1) * 8, (page - 1) * 8 + 8)
+          .slice((page - 1) * 6, (page - 1) * 6 + 6)
           .map((curElem, index) => {
             
             return (
