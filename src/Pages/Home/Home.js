@@ -8,9 +8,9 @@ import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [page, setpage] = useState(1);
-
-  const [blogs, setblogs] = useState([]);
+  const [page, setPage] = useState(1);
+  const [blogs, setBlogs] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     getAllBlogs();
@@ -18,38 +18,48 @@ const Home = () => {
 
   const getAllBlogs = async () => {
     let response = await getBlogs();
-    setblogs(response.data);
-
-    console.log(blogs,"Blogs display")
-
+    setBlogs(response.data);
+    setTotalPages(Math.ceil(response.data.length / 6));
   };
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
+
+  const startIndex = (page - 1) * 6;
+  const endIndex = page * 6;
+  const displayedBlogs = blogs.slice(startIndex, endIndex);
+
   return (
     <>
-    <Stack direction={"row"} sx={{ position: "absolute", bottom: "15%", right: "5%", justifyContent:'center', alignItems:"center", gap:"0.1rem" }}>
-      <StyledIcon >
-      <ContentPasteIcon onClick={() => navigate("/add")}/>
-      </StyledIcon>
-      <Typography variant="h6">ADD</Typography>
+      <Stack
+        direction="row"
+        sx={{
+          position: "absolute",
+          bottom: "15%",
+          right: "5%",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "0.1rem",
+        }}
+      >
+        <StyledIcon>
+          <ContentPasteIcon onClick={() => navigate("/add")} />
+        </StyledIcon>
+        <Typography variant="h6">ADD</Typography>
       </Stack>
 
       <DisplayBlogs direction="row">
-        {blogs
-          .slice((page - 1) * 6, (page - 1) * 6 + 6)
-          .map((curElem, index) => {
-            
-            return (
-              <>
-                <BlogCard curElem={curElem} index={index} setblogs={setblogs} />
-              </>
-            );
-          })}
+        {displayedBlogs.map((blog) => (
+          <BlogCard key={blog.id} curElem={blog} setBlogs={setBlogs} />
+        ))}
       </DisplayBlogs>
+
       <Pagination
         sx={{ position: "absolute", bottom: "5%", left: "45%" }}
-        count={(blogs?.length / 7).toFixed(0)}
-        onChange={(_, value) => {
-          setpage(value);
-        }}
+        count={totalPages}
+        page={page}
+        onChange={handlePageChange}
       />
     </>
   );

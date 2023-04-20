@@ -14,7 +14,7 @@ const navigate = useNavigate()
         <Toolbar>
         
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={() => navigate("/")}>
-             Blog App
+             Note App
           </Typography>
         </Toolbar>
       </AppBar>
